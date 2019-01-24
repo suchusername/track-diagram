@@ -1,0 +1,226 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>График занятия путей</title>
+	<link rel="stylesheet" href="sliderMove.css">
+</head>
+
+<body style="overflow: hidden;">
+
+<div style="position: absolute; margin: 10px 0 0 10px; width: 99%; height: 99%; overflow: hidden;">
+
+<!--Slider block-->
+<div style="width: 55%; height: 70px; margin: 10px 0 0 10px;">
+	<input style="margin-top: 20px;" id="tr_slider" width="300px" type="range" min="0" max="720" step="1" value="0">
+	<div style="position: relative;">
+	
+	<table width="100%" style="border: 0px solid black;" cellpadding="0" cellspacing="0"><tr>
+		<td align="left" width="100%">
+			<span id="tr_sliderValueTimeText">Время:</span> <span id="tr_sliderValueText"></span>
+		</td>
+		
+		<td align="right" style="padding: 0 7px;" nowrap>
+			<div class="tr_regularSmall">Ввести начальное время:</div>
+		</td>
+		
+		<td nowrap style="padding: 0 7px;" >	
+			<input id="tr_chooseTimeHours" type="number" step="1" min="0" max="23" placeholder="Часы" style="width: 60px;"></input>
+		</td>
+		
+		<td nowrap style="padding: 0 7px;">
+			<input id="tr_chooseTimeMins" type="number" step="1" min="0" max="59" placeholder="Минуты" style="width: 80px;"></input>
+		</td>
+		
+		<td nowrap style="padding: 0 7px;">
+			<div id="tr_chooseTimeButton"><span style="font-family:Calibri, Tahoma; font-size: 17px; margin-bottom: 1px;">Изменить</span></div>
+		</td>
+		
+		<td nowrap style="padding: 0 7px;" width="120px">
+			<div id="tr_chooseTimeError" class="tr_regularSmall" style="color: red; font-weight: bold;">Ошибка!</div>
+		</td>
+	</tr></table>
+	
+	</div>
+</div>
+
+<!--SVG Area-->
+
+<div id="tr_svgArea-wrapper">
+	<div id="tr_svgArea-container" style="width: 1400px; height: 1000px;">
+		<svg id="tr_svgArea" width="1400px" height="1000px">	
+		</svg>
+	</div>
+</div>
+
+<!--Coordinates output block-->
+<div id="tr_coordsOutput" style="margin: 20px 0 0 25px; float: left;">
+	<div class="regularSmall">x = <span id="tr_outputX">0</span></div>
+	<div class="regularSmall">y = <span id="tr_outputY">0</span></div>
+</div>
+	
+<!--Information on the right block-->	
+	
+<div style="position: absolute; margin: 5px 0 0 57%; width: 42%; border: 1px solid black;">
+	
+	<!--Direction and Station select block-->
+	<div style="position: absolute; margin: 10px 0 0 10px;">
+		
+		<!--Direction-->
+		<div class="tr_regular" style="position: absolute; width: 200px; margin: 0 0 0 0"><span style="font-size: 24px;">Направление:</span></div>
+		<div class="tr_select-style" style="position: absolute; margin: 2px 0 0 155px;">
+			<select id="tr_directionSelect">
+
+			</select>		
+		</div>
+		
+		<!--Station-->
+		<div class="tr_regular" style="position: absolute; width: 200px; margin: 33px 0 0 0"><span style="font-size: 24px;">Станция:</span></div>
+		<div class="tr_select-style" style="position: absolute; width: 180px; margin: 35px 0 0 100px;">
+			<select id="tr_stationSelect">
+
+			</select>		
+		</div>
+		
+	</div>
+	
+	
+	
+	
+	<!--Schedule and information buttons block-->
+	<div style="position: absolute; margin: 100px 0 0 10px;">
+		<a class="tr_buttonStats" href="#tr_popup1"><span class="tr_regularSmall">Расписание</span></a>
+	</div>
+	
+	<div style="position: absolute; margin: 100px 0 0 140px;">
+		<a class="tr_buttonStats" href="#tr_popup2"><span class="tr_regularSmall">Информация о станции</span></a>
+	</div>
+	
+	<!--Train search block-->
+	<div style="position: absolute; margin: 145px 0 0 10px;">
+		<div class="tr_regularSmall"><b>Найти поезд:</b></div>
+		<div>
+			<div class="tr_regularSmall" style="position: absolute; width: 175px; margin-top: 1px;">Номер поезда:</div>
+			<input id="tr_findInput" placeholder="Пример: 1234" class="tr_styleInput" type="text" style="position: absolute; width: 100px; margin: 3px 0 0 130px;"></input>
+			<div id="tr_noMatches" class="tr_regularSmall" style="position: absolute; width: 150px; margin: 2px 0 0 245px; color: red; font-weight: bold;">Нет совпадений!</div>
+		</div>
+	</div>
+	
+	
+	<!--Checkbox block-->
+	<div style="position: absolute; margin: 220px 0 0 10px;">
+		<input type="checkbox" id="tr_IDcheckbox" style="display: inline-block;"></input>
+				<div class="tr_regular" style="display: inline-block;">Отобразить ID путей.</div>
+				
+	</div>
+	
+	<div style="position: absolute; margin: 250px 0 0 10px;">
+		<input type="checkbox" id="tr_coordsCheckbox" style="display: inline-block;"></input>
+				<div class="tr_regular" style="display: inline-block;">Показывать координаты поля.</div>
+				
+	</div>
+	
+	<div style="position: absolute; margin: 280px 0 0 10px;">
+		<input type="checkbox" checked id="tr_platformsCheckbox" style="display: inline-block;"></input>
+				<div class="tr_regular" style="display: inline-block;">Показывать платформы.</div>
+				
+	</div>
+	
+	
+	<!--Information table block-->
+	<div id="tr_table-container" style="position: absolute; margin: 310px 0 0 10px;">
+		<table id="tr_table" style="margin: 20px 20px 20px 0;">
+			<tr> <td>Номер поезда</td> <td id="tr_T_number"></td> </tr>
+			<tr> <td>Содержимое</td> <td id="tr_T_cont"></td> </tr>
+			<tr> <td>Машинист</td> <td id="tr_T_driver"></td> </tr>
+			<tr> <td>Количество вагонов</td> <td id="tr_T_cars"></td> </tr>
+			<tr> <td>Время на станции</td> <td id="tr_T_time"></td> </tr>
+				
+		</table>	
+	</div>
+	
+</div>
+
+</div>
+
+<!-- Schedule pop-up block -->
+
+<div id="tr_popup1" class="tr_overlay">
+	<div class="tr_popup">
+		<h2 id="tr_statsHeading">Станция</h2>
+		<a class="tr_close" href="#">&times;</a>
+		<div class="tr_content">
+			
+			<div class="tr_contentWrap" style="width: 1100px; height: 600px; border: 2px solid black; overflow-y: auto;">
+				
+				<div id="tr_tableStats-container" style="position: absolute; margin: 0 0 0 10px;">
+					<table id="tr_tableStats" style="margin: 20px;">
+							
+					</table>	
+				</div>
+			
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+<!-- Station information pop-up block -->
+
+<div id="tr_popup2" class="tr_overlay">
+	<div class="tr_popup">
+		<h2 id="tr_statsInfoHeading">Станция</h2>
+		<a class="tr_close" href="#">&times;</a>
+		<div class="tr_content">
+			
+			<div class="tr_contentWrap" style="overflow-y: auto; width: 1100px; height: 600px; border: 2px solid black; overflow-y: auto; padding: 0px;">
+				
+				<div style="position: absolute; margin: 35px 0 0 650px; width: 400px; height: 300px; border: 3px solid black;">
+					<img id="tr_infTab_Image" src="" width="400" height="300" alt="Фотография отсутствует.">
+				</div>
+				
+				<table id="tr_infoTable" style="position: absolute; margin: 30px 0 0 30px; width: 600px; text-align: center">
+					<tr> <td>Название станции</td> <td id="tr_infTab_Name"></td> </tr>
+					<tr> <td>Направление</td> <td id="tr_infTab_Direction"></td> </tr>
+					<tr> <td>Тип cтанции</td> <td id="tr_infTab_Type"></td> </tr>
+					<tr> <td title="АСУЖТ - Автоматизированная Система Управления Железнодорожным Транспортом">Код в АСУЖТ</td> <td id="tr_infTab_Code"></td> </tr>
+					<tr> <td>Количество платформ</td> <td id="tr_infTab_Platforms"></td> </tr>
+					<tr> <td>Количество путей</td> <td id="tr_infTab_Paths"></td> </tr>
+					<tr> <td>Расстояние до Москвы</td> <td id="tr_infTab_Moscow"></td> </tr>
+				</table>
+				
+				<table cellpadding="10px" style="position: absolute; margin: 355px 0 0 30px; width: 1026px; border-collapse: collapse; border: 0px solid black;">
+					<tr style="height: 220px"> 
+						<td style="vertical-align: top;">
+							<h2>Дополнительная информация</h2>
+							<div align="justify" id="tr_infTab_AddInfo" style="font-family: Calibri; font-size: 20px; height: 170px; overflow-y: auto; padding-right: 8px;"></div>
+						</td> 
+						<td style="vertical-align: top; border-left: 2px solid #ddd;">
+							<h2>Контакты</h2>
+							
+							<table class="tr_regularSmall" style="width: 500px; border: 0px solid black;">
+								<tr> <td width="40%">Начальник:</td> <td width="60%" id="tr_infTab_Owner"></td></tr>
+								<tr> <td>Телефон:</td> <td id="tr_infTab_OwnerPhone"></td></tr>
+								<tr> <td>Электронная почта:</td> <td id="tr_infTab_OwnerEmail"></td></tr>
+							</table>
+								
+						</td> 
+					</tr>
+				</table>
+				
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+
+
+
+<script src="libs/jquery-2.2.2.min.js"></script>
+<script src="libs/Snap.svg-0.4.1/dist/snap.svg-min.js"></script>
+<script src="data.js"></script>
+<script src="stations.js"></script>
+<script src="stats.js"></script>
+<script src="sliderMove.js"></script>
+</body>
+</html>
